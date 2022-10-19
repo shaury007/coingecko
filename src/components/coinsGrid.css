@@ -1,0 +1,12 @@
+.coinLogo {
+  width: 100%;
+}
+
+.gridContainer {
+  width: 70%;
+  margin: 50px auto;
+}
+
+.MuiDataGrid-row {
+  cursor: pointer;
+}
