@@ -10,3 +10,7 @@
 .MuiDataGrid-row {
   cursor: pointer;
 }
+
+.gridContainer{
+  width:752px;
+}

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { getCoinsList } from '../adapters/xhr/coinAdapter';
 import './coinsGrid.css';
+import ErrorAlert from './errorAlert';
 
 const CoinsGrid = (props: { handleCoinClick: (value: any) => void }) => {
   const [page, setPage] = useState<number>(0);
   const [data, setData] = useState<Array<any>>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const per_page = 10;
 
   // columns define the fields to be displayed from data received in API response
@@ -20,9 +22,24 @@ const CoinsGrid = (props: { handleCoinClick: (value: any) => void }) => {
     },
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'symbol', headerName: 'Symbol' },
-    { field: 'current_price', headerName: 'Current Price' },
-    { field: 'high_24h', headerName: 'High 24h Price', width: 150 },
-    { field: 'low_24h', headerName: 'Low 24h Price', width: 150 }
+    {
+      field: 'current_price',
+      headerName: 'Current Price',
+      width: 150,
+      renderCell: (params: any) => `\u20AC ${params.value}`
+    },
+    {
+      field: 'high_24h',
+      headerName: 'High 24h Price',
+      width: 150,
+      renderCell: (params: any) => `\u20AC ${params.value}`
+    },
+    {
+      field: 'low_24h',
+      headerName: 'Low 24h Price',
+      width: 150,
+      renderCell: (params: any) => `\u20AC ${params.value}`
+    }
   ];
 
   // This is the function to perform API call to fetch the list of coins
@@ -34,6 +51,9 @@ const CoinsGrid = (props: { handleCoinClick: (value: any) => void }) => {
       setData(response.data);
       setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
+      setIsError(true);
+      setTimeout(() => setIsError(false), 5000);
       console.log(err);
     }
   };
@@ -45,6 +65,7 @@ const CoinsGrid = (props: { handleCoinClick: (value: any) => void }) => {
 
   return (
     <div className="gridContainer" style={{ height: 640 }}>
+      {isError ? <ErrorAlert /> : ''}
       <DataGrid
         rows={data}
         rowCount={100}

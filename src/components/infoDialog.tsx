@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import parse from 'html-react-parser';
 import CircularProgress from '@mui/material/CircularProgress';
+import ErrorAlert from './errorAlert';
 
 interface InfoDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ const InfoDialog = (props: InfoDialogProps) => {
   };
   const [info, setInfo] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   //Function to call API to fetch a particular coin's details
   const fetchCoinDetails = async () => {
@@ -33,6 +35,10 @@ const InfoDialog = (props: InfoDialogProps) => {
       setInfo(response.data);
       setIsLoading(false);
     } catch (err) {
+      props.onClose();
+      setIsLoading(false);
+      setIsError(true);
+      setTimeout(() => setIsError(false), 5000);
       console.log(err);
     }
   };
@@ -59,6 +65,7 @@ const InfoDialog = (props: InfoDialogProps) => {
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      {isError ? <ErrorAlert /> : ''}
       {!isLoading ? (
         <Dialog onClose={handleClose} open={props.open}>
           <DialogTitle data-testid="dialogTitle">Coin Information</DialogTitle>
